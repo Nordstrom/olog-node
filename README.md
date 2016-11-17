@@ -11,10 +11,19 @@ npm install olog --save
 To get started require olog passing your module var.  This will automatically use your module to include the component name in your logs.
 
 ```js
-var log = require('olog')(module)
+const log = require('olog')(module)
 ```
 
-To log a server informational log, pass in a log record (javascript object) with fields.  If you have a message field, it will use print-f like formatting (see [util.format](https://millermedeiros.github.io/mdoc/examples/node_api/doc/util.html#util.format)).  The 2nd, 3rd, etc arguments are passed in order to this message format string.
+To configure logging for your application, call the config function in the top-level module.
+
+```js
+log.config({
+  application: 'product-service',
+  environment: 'dev'
+})
+```
+
+To log a server informational log, pass in a log record (javascript object) with fields.
 
 ```js
 let productId = '123'
@@ -28,7 +37,6 @@ log.info({
     productId: productId
   }
 })
-
 ```
 
 Outputs:
@@ -51,18 +59,128 @@ Outputs:
 }
 ```
 
-## Configuration
-
-```
-
 ## API
 
-* **[log.serverInfo(record\[, args...\])](#logserverInforecord-args)**
-* **[log.serverDebug(record\[, args...\])](#logserverDebugrecord-args)**
-* **[log.info(record[, args...])](#loginforecord-args)**
+* **[olog (options)](#olog-options)**
+* **[log.config (options)](#logconfig-options)**
+* **[log.debug (record)](#logdebug-record)**
+* **[log.info (record)](#loginfo-record)**
+* **[log.warn (record)](#logwarn-record)**
+* **[log.error (record)](*logerror-record)**
+* **[log.serverDebug (record)](#logserverDebug-record)**
+* **[log.serverInfo (record)](#logserverInfo-record)**
+* **[log.serverWarn (record)](#logserverWarn-record)**
+* **[log.serverError (record)](#logserverError-record)**
+* **[log.clientDebug (record)](#logclientDebug-record)**
+* **[log.clientInfo (record)](#logclientInfo-record)**
+* **[log.clientWarn (record)](#logclientWarn-record)**
+* **[log.clientError (record)](#logclientError-record)**
+* **[log.httpApiStart (record)](#loghttpApiStart-record)**
+* **[log.httpApiStop (record)](#loghttpApiStop-record)**
+* **[log.httpUiStart (record)](#loghttpUiStart-record)**
+* **[log.httpUiStop (record)](#loghttpUiStop-record)**
+* **[log.httpApiSend (record)](#loghttpApiSend-record)**
+* **[log.httpApiReceive (record)](#loghttpApiReceive-record)**
+* **[log.eventStart (record)](#logeventStart-record)**
+* **[log.eventStop (record)](#logeventStop-record)**
 
-### log.serverInfo(record[, args...])
+### olog (module[, defaults])
+Factor function that creates a new logger.  It makes it easy to require and create a logger for a module.
 
-### log.serverDebug(record[, args...])
+#### module
+Type: `String` or `Object`
 
-### log.info(record[, args...])
+If module is a String, it will be `component` in log records.  If module is an Object, it should be [Node's module Object](https://nodejs.org/api/modules.html#modules_the_module_object).  The the `component` will be generated based on its properties.
+
+#### defaults
+Type: `Object`
+
+Allows you to provide module-level defaults for any of the log record properties (i.e. category, transaction, etc).
+
+##### Examples
+
+```js
+// component name
+const log = require('my-module')  
+
+or
+
+// generates component name
+const log = require(module)
+
+or
+
+// applies record defaults
+const log = require(module, {
+  category: 'Shopping Cart',
+  transaction: 'UpdateCart'
+})
+```
+
+### log.config (options)
+Configure application-wide settings for logging.
+
+#### options
+Type: `Object`
+
+##### options.application
+Type: `String`
+Environment Variable: `OLOG_APPLICATION`
+
+##### options.environment
+Type: `String`
+Environment Variable: `OLOG_ENVIRONMENT`
+
+##### options.level  (process.env.OLOG_LEVEL)
+Type: `String`
+Environment Variable: `OLOG_LEVEL`
+
+##### options.stream
+Type: `Stream`
+
+##### options.messageTemplates
+Type: `Object`
+
+### log.debug (record)
+Alias for [log.serverDebug (record)](#logserverDebug-record).
+
+### log.info (record)
+Alias for [log.serverInfo (record)](#logserverInfo-record).
+
+### log.warn (record)
+Alias for [log.serverWarn (record)](#logserverWarn-record).
+
+### log.error (record)
+Alias for [log.serverError (record)](#logserverError-record).
+
+### log.serverDebug (record)
+
+### log.serverInfo (record)
+
+### log.serverWarn (record)
+
+### log.serverError (record)
+
+### log.clientDebug (record)
+
+### log.clientInfo (record)
+
+### log.clientWarn (record)
+
+### log.clientError (record)
+
+### log.httpApiStart (record)
+
+### log.httpApiStop (record)
+
+### log.httpUiStart (record)
+
+### log.httpUiStop (record)
+
+### log.httpApiSend (record)
+
+### log.httpApiReceive (record)
+
+### log.eventStart (record)
+
+### log.eventStop (record)
