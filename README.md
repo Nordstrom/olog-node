@@ -101,17 +101,17 @@ Allows you to provide module-level defaults for any of the log record properties
 
 ```js
 // component name
-const log = require('my-module')  
+const log = require('olog')('my-module')  
 
 or
 
 // generates component name
-const log = require(module)
+const log = require('olog')(module)
 
 or
 
 // applies record defaults
-const log = require(module, {
+const log = require('olog')(module, {
   category: 'Shopping Cart',
   transaction: 'UpdateCart'
 })
