@@ -138,8 +138,42 @@ Environment Variable: `OLOG_LEVEL`
 ##### options.stream
 Type: `Stream`
 
-##### options.messageTemplates
+##### options.messageFormatters
 Type: `Object`
+
+Configure message formatters for each schema.  This Object contains properties following this syntax:
+`<schemaFunctionName>: (record) => { return <formatted message> }`.  
+For example:
+
+```js
+{
+  serverInfo: (record) => { return `${record.transaction} - DETAILS: ${record.message}` },
+  httpApiStop: (record) => { return `${record.route}[${record.responseCode}]` }
+}
+```
+
+###### Default Message Templates
+The default message templates for each schema are:
+
+|Schema|Template|
+|------|--------|
+|serverDebug|`[SERVER-Debug] ${record.transaction}: ${record.message}`|
+|serverInfo|`[SERVER-Info] ${record.transaction}: ${record.message}`|
+|serverWarn|`[SERVER-Warn] ${record.transaction}: ${record.message}`|
+|serverError|`[SERVER-Error] ${record.transaction}: ${record.message}: ${record.exception}`|
+|clientDebug|`[CLIENT-Debug] ${record.transaction} (${record.uri}): ${record.message}`|
+|clientInfo|`[CLIENT-Info] ${record.transaction} (${record.uri}): ${record.message}`|
+|clientWarn|`[CLIENT-Warn] ${record.transaction} (${record.uri}): ${record.message}`|
+|clientError|`[CLIENT-Error] ${record.transaction}: ${record.message}: ${record.exception}`|
+|httpApiStart|`[HTTP-API-Start] ${record.transaction} on ${record.route} for ${record.trace}`|
+|httpApiStop|`[HTTP-API-Stop] ${record.transaction} on ${record.route}[${record.responseCode}] in ${record.duration}ms for ${record.trace}`|
+|httpUiStart|`[HTTP-UI-Start] ${record.transaction} on ${record.route} for ${record.trace}`|
+|httpUiStop|`[HTTP-UI-Stop] ${record.transaction} on ${record.route}[${record.responseCode}] in ${record.duration}ms for ${record.trace}`|
+|httpApiSend|`[HTTP-API-Start] ${record.transaction} on ${record.api} (${record.uri}) for ${record.trace}`|
+|httpApiReceive|`[HTTP-API-Stop] ${record.transaction} on ${record.api} (${record.uri})[${record.responseCode}] in ${record.duration}ms for ${record.trace}`|
+|eventStart|`[EVENT-Start] ${record.transaction} on ${record.topic}(${record.key}) for ${record.trace}`|
+|eventStop|`[EVENT-Stop] ${record.transaction} on ${record.topic}(${record.key}) in ${record.duration}ms for ${record.trace}`|
+
 
 ### log.debug (record)
 Alias for [log.serverDebug (record)](#logserverDebug-record).
