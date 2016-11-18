@@ -1,3 +1,4 @@
+'use strict'
 
 const os = require('os')
 const stringify = require('fast-safe-stringify')
@@ -6,6 +7,16 @@ const debug = 0
 const info = 1
 const warn = 2
 const error = 3
+
+const levelNum = {
+  debug: debug,
+  info: info,
+  warn: warn,
+  error: error
+}
+
+// logging schema version
+const version = 3
 
 const coreFields = [
   'time',
@@ -18,6 +29,7 @@ const coreFields = [
   'host',
   'pid',
   'component',
+  'category',
   'transaction',
   'trace',
   'annotations',
@@ -78,8 +90,9 @@ let appOpts = {
   level: process.env.OLOG_LEVEL || 'info',
   application: process.env.OLOG_APPLICATION,
   environment: process.env.OLOG_ENVIRONMENT,
-  pid: process.pid,
-  host: stringify(os.hostname()),
+  pid: stringify(process.pid),
+  host: os.hostname(),
+  version: version,
   stream: process.stdout,
   schemaNames: {
     serverDebug: 'SERVER-Debug',
@@ -138,10 +151,10 @@ let compOpts = {}
 class Log {
   constructor (component, defaults) {
     this.component = component
-    this.defaults = defaults
+    this.defaults = defaults || {}
   }
 
-  config (options) {
+  static config (options) {
     appOpts = Object.assign(appOpts, options)
   }
 
@@ -168,31 +181,57 @@ class Log {
   _levelNotEnabled (level) {
     // check that level num is less than the default level
     // return true if so; false otherwise
+    return (level < levelNum[appOpts.level])
   }
 
   _formatMessage (id, record) {
     // use id to lookup message formatter, passing record in to the formatter fn
     // return formatted message
+    return appOpts.messageFormatters[id](record)
   }
 
   _write (id, level, record) {
+    record.component = this.component
+    record.time = (new Date()).toISOString()
+    record.level = level
     // 1. get schemaName by id
+    record.schema = appOpts.schemaNames[id]
     // 2. format message
+    record.message = this._formatMessage(id, record)
     // 3. normalize record
+    record = this._normalize(id, record)
     // 4. write record to stream
+    appOpts.stream.write(record)
   }
 
-  serverDebug(record) {
+  // todo: these can all be dynamically generated w/ ES6
+  serverDebug (record) {
     if (this._levelNotEnabled(debug)) return
     this._write('serverDebug', 'debug', record)
   }
+  debug () { this.serverDebug.apply(this, arguments) }
 
-  serverInfo(record) {
-    if (this._levelNotEnabled(debug)) return
-    this._write('serverDebug', 'debug', record)
+  serverInfo (record) {
+    if (this._levelNotEnabled(info)) return
+    this._write('serverInfo', 'info', record)
   }
+  info () { this.serverInfo.apply(this, arguments) }
+
+  serverWarn (record) {
+    if (this._levelNotEnabled(warn)) return
+    this._write('serverWarn', 'warn', record)
+  }
+  warn () { this.serverWarn.apply(this, arguments) }
+
+  serverError (record) {
+    if (this._levelNotEnabled(error)) return
+    this._write('serverError', 'error', record)
+  }
+  error () { this.serverError.apply(this, arguments) }
 }
 
 module.exports = (component, defaults) => {
   return new Log(component, defaults)
 }
+
+module.exports.Log = Log

@@ -4,7 +4,7 @@
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
   "main": "index.js",
   "scripts": {
-    "test": "standard && istanbul test _mocha",
+    "test": "standard --fix && istanbul test _mocha",
     "lint": "standard",
     "tdd": "mocha -w"
   },
