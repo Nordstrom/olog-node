@@ -1,6 +1,6 @@
 {
   "name": "olog",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
   "main": "index.js",
   "scripts": {
