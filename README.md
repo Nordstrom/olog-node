@@ -182,6 +182,7 @@ This determines allowed output fields for each schema along with the order of ou
 
 ##### options.schemaNames
 Type: `Object`
+
 Default:
 ```js
 {
