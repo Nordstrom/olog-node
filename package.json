@@ -2,7 +2,7 @@
   "name": "olog",
   "version": "0.1.0",
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
-  "main": "index.js",
+  "main": "olog.js",
   "scripts": {
     "test": "standard && istanbul test _mocha",
     "lint": "standard",

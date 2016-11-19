@@ -1,3 +1,4 @@
+'use strict'
 
 const os = require('os')
 const stringify = require('fast-safe-stringify')
@@ -143,6 +144,15 @@ class Log {
 
   config (options) {
     appOpts = Object.assign(appOpts, options)
+  }
+
+  describeFields () {
+    for (var id in appOpts.fields) {
+      let fields = appOpts.fields[id].map((field) => { return `'${field}'` }).join(', ')
+      console.log(`${id}: [${fields}]`)
+    }
+    //console.log(JSON.stringify(appOpts.fields, null, 2))
+    //console.log(appOpts)
   }
 
   _normalize (id, record) {
