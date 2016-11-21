@@ -19,8 +19,8 @@ describe('basic logging functionality', () => {
     let log = olog('componentName')
     log.serverInfo({transaction: 'CreateComponent', message: 'Encountered issue creating component'})
 
-    should(catcher.records[0]).have.property('transaction', 'CreateComponent')
-    catcher.records[0].message.should.equal('[SERVER-Info] CreateComponent: Encountered issue creating component')
+    should(catcher.getParsedRecord(0)).have.property('transaction', 'CreateComponent')
+    catcher.getParsedRecord(0).message.should.equal('[SERVER-Info] CreateComponent: Encountered issue creating component')
   })
 
   it('should output the same log as stated in the readme', function () {
@@ -53,7 +53,7 @@ describe('basic logging functionality', () => {
       }
     }
 
-    catcher.records[0].should.match(expectedLog)
+    catcher.getParsedRecord(0).should.match(expectedLog)
   })
 
   describe('default options', () => {
@@ -65,15 +65,15 @@ describe('basic logging functionality', () => {
       olog('defaultTest', defaults)
         .serverInfo({message: 'Default options should be used'})
 
-      catcher.records[0].should.have.property('component', 'defaultTest')
-      catcher.records[0].should.match(defaults)
+      catcher.getParsedRecord(0).should.have.property('component', 'defaultTest')
+      catcher.getParsedRecord(0).should.match(defaults)
     })
 
     it('should override app options with default options', () => {
       olog('defaultOverrideTest', { version: 2 })
         .serverInfo({message: 'Should override version'})
 
-      catcher.records[0].should.match({
+      catcher.getParsedRecord(0).should.match({
         'version': 2,
         'component': 'defaultOverrideTest'
       })
@@ -86,15 +86,15 @@ describe('basic logging functionality', () => {
       })
       log.serverInfo({message: 'Default options should be used', transaction: 'ClearCart'})
 
-      catcher.records[0].should.have.property('category', 'Shopping Cart')
-      catcher.records[0].should.have.property('transaction', 'ClearCart')
+      catcher.getParsedRecord(0).should.have.property('category', 'Shopping Cart')
+      catcher.getParsedRecord(0).should.have.property('transaction', 'ClearCart')
     })
 
     it('should not modify app options of other logs', () => {
       olog('defaultOverrideTest', { version: 2 })
         .serverInfo({message: 'Should override version'})
 
-      catcher.records[0].should.match({
+      catcher.getParsedRecord(0).should.match({
         'version': 2,
         'component': 'defaultOverrideTest'
       })
@@ -102,7 +102,7 @@ describe('basic logging functionality', () => {
       olog('notModifiedTest', {transaction: 'UpdateCart'})
         .serverInfo({message: 'Should not override version'})
 
-      catcher.records[1].should.match({
+      catcher.getParsedRecord(1).should.match({
         'version': 3,
         'component': 'notModifiedTest'
       })
@@ -113,12 +113,12 @@ describe('basic logging functionality', () => {
     it('should change app options for current loggers', () => {
       const log = olog('componentName')
       log.serverInfo({message: 'Should not have an application field'})
-      catcher.records[0].should.not.have.property('application')
+      catcher.getParsedRecord(0).should.not.have.property('application')
 
       olog.Log.config({application: 'UnitTests'})
 
       log.serverInfo({message: 'Should have an application field'})
-      catcher.records[1].should.have.property('application', 'UnitTests')
+      catcher.getParsedRecord(1).should.have.property('application', 'UnitTests')
     })
 
     it('should change app options for all loggers', () => {
@@ -126,7 +126,7 @@ describe('basic logging functionality', () => {
 
       olog('component2Name')
         .serverInfo({message: 'Should have an application field'})
-      catcher.records[0].should.have.property('application', 'UnitTests')
+      catcher.getParsedRecord(0).should.have.property('application', 'UnitTests')
     })
   })
 
@@ -134,12 +134,12 @@ describe('basic logging functionality', () => {
     it('info', () => {
       olog('infoAliasTest')
         .info({message: 'Should have info level'})
-      catcher.records[0].should.have.property('level', 'info')
+      catcher.getParsedRecord(0).should.have.property('level', 'info')
     })
     it('warn', () => {
       olog('warnAliasTest')
         .warn({message: 'Should have warn level'})
-      catcher.records[0].should.have.property('level', 'warn')
+      catcher.getParsedRecord(0).should.have.property('level', 'warn')
     })
     // todo other levels - debug needs to set config level lower
   })

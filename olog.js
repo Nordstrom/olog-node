@@ -201,7 +201,7 @@ class Log {
     // 3. normalize record
     record = this._normalize(id, record)
     // 4. write record to stream
-    appOpts.stream.write(record)
+    appOpts.stream.write(stringify(record))
   }
 
   // todo: these can all be dynamically generated w/ ES6

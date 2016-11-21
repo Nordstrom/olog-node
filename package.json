@@ -7,7 +7,8 @@
     "test": "standard && istanbul test _mocha",
     "lint": "standard",
     "tdd": "mocha -w",
-    "fix": "standard --fix"
+    "fix": "standard --fix",
+    "stdtest": "standard --fix && istanbul test _mocha"
   },
   "repository": {
     "type": "git",
