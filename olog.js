@@ -228,7 +228,6 @@ class Log {
     appOpts.stream.write(stringify(record))
   }
 
-  serverDebug (record) {
   // todo: these can all be dynamically generated w/ ES6
   serverDebug (record) {
     if (this._levelNotEnabled(debug)) return
