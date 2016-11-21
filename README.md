@@ -62,28 +62,28 @@ Outputs:
 ## API
 
 * **[record](#record)**
-* **[olog (options)](#olog-options)**
+* **[olog (module\[, defaults\])](#olog-module-defaults)**
 * **[log.config (options)](#logconfig-options)**
 * **[log.debug (record)](#logdebug-record)**
 * **[log.info (record)](#loginfo-record)**
 * **[log.warn (record)](#logwarn-record)**
 * **[log.error (record)](*logerror-record)**
-* **[log.serverDebug (record)](#logserverDebug-record)**
-* **[log.serverInfo (record)](#logserverInfo-record)**
-* **[log.serverWarn (record)](#logserverWarn-record)**
-* **[log.serverError (record)](#logserverError-record)**
-* **[log.clientDebug (record)](#logclientDebug-record)**
-* **[log.clientInfo (record)](#logclientInfo-record)**
-* **[log.clientWarn (record)](#logclientWarn-record)**
-* **[log.clientError (record)](#logclientError-record)**
-* **[log.httpApiStart (record)](#loghttpApiStart-record)**
-* **[log.httpApiStop (record)](#loghttpApiStop-record)**
-* **[log.httpUiStart (record)](#loghttpUiStart-record)**
-* **[log.httpUiStop (record)](#loghttpUiStop-record)**
-* **[log.httpApiSend (record)](#loghttpApiSend-record)**
-* **[log.httpApiReceive (record)](#loghttpApiReceive-record)**
-* **[log.eventStart (record)](#logeventStart-record)**
-* **[log.eventStop (record)](#logeventStop-record)**
+* **[log.serverDebug (record)](#logserverdebug-record)**
+* **[log.serverInfo (record)](#logserverinfo-record)**
+* **[log.serverWarn (record)](#logserverwarn-record)**
+* **[log.serverError (record)](#logservererror-record)**
+* **[log.clientDebug (record)](#logclientdebug-record)**
+* **[log.clientInfo (record)](#logclientinfo-record)**
+* **[log.clientWarn (record)](#logclientwarn-record)**
+* **[log.clientError (record)](#logclienterror-record)**
+* **[log.httpApiStart (record)](#loghttpapistart-record)**
+* **[log.httpApiStop (record)](#loghttpapistop-record)**
+* **[log.httpUiStart (record)](#loghttpuistart-record)**
+* **[log.httpUiStop (record)](#loghttpuistop-record)**
+* **[log.httpApiSend (record)](#loghttpapisend-record)**
+* **[log.httpApiReceive (record)](#loghttpapireceive-record)**
+* **[log.eventStart (record)](#logeventstart-record)**
+* **[log.eventStop (record)](#logeventstop-record)**
 
 ### record
 Type: `Object`
@@ -134,32 +134,27 @@ Type: `Object`
 
 ##### options.application
 Type: `String`
-Environment Variable: `OLOG_APPLICATION`
 
 Name or ID of the application.  Set here or with Environment Variable `OLOG_APPLICATION`.
 
 ##### options.environment
 Type: `String`
-Environment Variable: `OLOG_ENVIRONMENT`
 
 Name or ID of the deployed environment.  Set here or with Environment Variable `OLOG_ENVIRONMENT`.
 
 ##### options.level
-Type: `String` one of `debug`, `info`, `warn`, `error`
-Default: `info`
+Type: `String` one of `debug`, `info`, `warn`, `error` Default: `info`
 Environment Variable: `OLOG_LEVEL`
 
 Name of log level enabled for this application.  Set here or with Environment Variable `OLOG_LEVEL`.
 
 ##### options.stream
-Type: `Stream`
-Default: process.stdout
+Type: `Stream` Default: process.stdout
 
 Writable stream to which log records are written.  Records are output in UTF8 stringified JSON format.
 
 ##### options.fields
-Type: `Object`
-Default:
+Type: `Object` Default:
 ```js
 {
   serverDebug: ['time', 'message', 'level', 'schema', 'version', 'application', 'environment', 'host', 'pid', 'component',    'transaction', 'trace', 'annotations', 'extensions']
@@ -183,9 +178,7 @@ Default:
 This determines allowed output fields for each schema along with the order of output for each field.
 
 ##### options.schemaNames
-Type: `Object`
-
-Default:
+Type: `Object` Default:
 ```js
 {
   serverDebug: 'SERVER-Debug',
@@ -210,8 +203,7 @@ Default:
 Logged name of each schema based on function name.
 
 ##### options.messageFormatters
-Type: `Object`
-Default:
+Type: `Object` Default:
 ```js
 {
   serverDebug: (r) => { return `[${r.schema}] ${r.transaction}: ${r.message}` },
@@ -244,16 +236,16 @@ For example:
 ```
 
 ### log.debug (record)
-Alias for [log.serverDebug (record)](#logserverDebug-record).
+Alias for [log.serverDebug (record)](#logserverdebug-record).
 
 ### log.info (record)
-Alias for [log.serverInfo (record)](#logserverInfo-record).
+Alias for [log.serverInfo (record)](#logserverinfo-record).
 
 ### log.warn (record)
-Alias for [log.serverWarn (record)](#logserverWarn-record).
+Alias for [log.serverWarn (record)](#logserverwarn-record).
 
 ### log.error (record)
-Alias for [log.serverError (record)](#logserverError-record).
+Alias for [log.serverError (record)](#logservererror-record).
 
 ### log.serverDebug (record)
 Logs [record](#record) using serverDebug (SERVER-Debug) schema.
