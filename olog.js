@@ -4,9 +4,9 @@ const os = require('os')
 const stringify = require('fast-safe-stringify')
 
 const debug = 0
-const info = 1
-const warn = 2
-const error = 3
+// const info = 1
+// const warn = 2
+// const error = 3
 
 const coreFields = [
   'time',
@@ -75,6 +75,19 @@ const httpReceiveFields = httpSendFields.concat([
   'duration'
 ])
 
+const eventStartFields = [
+  'originatedAt',
+  'topic',
+  'partition',
+  'key',
+  'attributes'
+]
+
+const eventStopFields = eventStartFields.concat([
+  'duration',
+  'elapsed'
+])
+
 let appOpts = {
   level: process.env.OLOG_LEVEL || 'info',
   application: process.env.OLOG_APPLICATION,
@@ -130,7 +143,9 @@ let appOpts = {
     httpUiStart: coreFields.concat(httpStartFields),
     httpUiStop: coreFields.concat(httpStopFields),
     httpApiSend: coreFields.concat(httpSendFields),
-    httpApiReceive: coreFields.concat(httpReceiveFields)
+    httpApiReceive: coreFields.concat(httpReceiveFields),
+    eventStart: coreFields.concat(eventStartFields),
+    eventStop: coreFields.concat(eventStopFields)
   }
 }
 
@@ -151,8 +166,8 @@ class Log {
       let fields = appOpts.fields[id].map((field) => { return `'${field}'` }).join(', ')
       console.log(`${id}: [${fields}]`)
     }
-    //console.log(JSON.stringify(appOpts.fields, null, 2))
-    //console.log(appOpts)
+    // console.log(JSON.stringify(appOpts.fields, null, 2))
+    // console.log(appOpts)
   }
 
   _normalize (id, record) {
@@ -192,12 +207,12 @@ class Log {
     // 4. write record to stream
   }
 
-  serverDebug(record) {
+  serverDebug (record) {
     if (this._levelNotEnabled(debug)) return
     this._write('serverDebug', 'debug', record)
   }
 
-  serverInfo(record) {
+  serverInfo (record) {
     if (this._levelNotEnabled(debug)) return
     this._write('serverDebug', 'debug', record)
   }

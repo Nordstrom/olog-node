@@ -4,8 +4,8 @@
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
   "main": "olog.js",
   "scripts": {
-    "test": "standard && istanbul test _mocha",
-    "lint": "standard",
+    "test": "snazzy && istanbul test _mocha",
+    "lint": "snazzy",
     "tdd": "mocha -w"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
     "should": "^11.1.1",
+    "snazzy": "^5.0.0",
     "standard": "^8.5.0"
   },
   "dependencies": {
