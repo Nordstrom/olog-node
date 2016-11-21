@@ -2,13 +2,11 @@
   "name": "olog",
   "version": "0.2.0",
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
-  "main": "index.js",
+  "main": "olog.js",
   "scripts": {
-    "test": "standard && istanbul test _mocha",
-    "lint": "standard",
-    "tdd": "mocha -w",
-    "fix": "standard --fix",
-    "stdtest": "standard --fix && istanbul test _mocha"
+    "test": "snazzy && istanbul test _mocha",
+    "lint": "snazzy",
+    "tdd": "mocha -w"
   },
   "repository": {
     "type": "git",
@@ -35,6 +33,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
     "should": "^11.1.1",
+    "snazzy": "^5.0.0",
     "standard": "^8.5.0"
   },
   "dependencies": {
