@@ -1,5 +1,5 @@
 # olog
-Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging.  This logging is based on predefined [Schemas]
+Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging.  This is logging based on predefined [Schemas]
 (SCHEMAS.md) with default fields.  Schema names, fields, and message formatting all have defaults but can all be configured.
 
 ## Install
