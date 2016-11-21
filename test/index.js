@@ -7,6 +7,8 @@ var olog = require('../olog')
 var catcher = require('./util/logCatcher')
 
 const ISO_REGEX = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/
+const HOSTNAME_REGEX = /^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$/
+const PID_REGEX = /[0-9]*/
 
 describe('basic logging functionality', () => {
   beforeEach(() => {
@@ -23,37 +25,44 @@ describe('basic logging functionality', () => {
     catcher.getParsedRecord(0).message.should.equal('[SERVER-Info] CreateComponent: Encountered issue creating component')
   })
 
-  it('should output the same log as stated in the readme', function () {
-    let log = olog('lib/mymodule')
+  describe('using the readme example', () => {
     let productId = '123'
-
-    log.serverInfo({
-      message: `Db Update on Product ${productId}`,
-      category: 'Catalog',
-      transaction: 'CreateProduct',
-      trace: 'e45dc587-3516-489f-9487-391a119889c0',
-      annotations: {
-        productId: productId
+    var expectedLog, logInput, log
+    beforeEach(() => {
+      logInput = {
+        message: `Db Update on Product ${productId}`,
+        category: 'Catalog',
+        transaction: 'CreateProduct',
+        trace: 'e45dc587-3516-489f-9487-391a119889c0',
+        annotations: {
+          productId: productId
+        }
       }
+      expectedLog = {
+        'time': ISO_REGEX,
+        'message': '[SERVER-Info] CreateProduct: Db Update on Product 123',
+        'level': 'info',
+        'schema': 'SERVER-Info',
+        'version': 3,
+        'host': HOSTNAME_REGEX,
+        'pid': PID_REGEX,
+        'component': 'lib/mymodule',
+        'category': 'Catalog',
+        'transaction': 'CreateProduct',
+        'trace': 'e45dc587-3516-489f-9487-391a119889c0',
+        'annotations': {
+          'productId': '123'
+        }
+      }
+      log = olog('lib/mymodule')
+      log.serverInfo(logInput)
     })
-    let expectedLog = {
-      'time': ISO_REGEX,
-      'message': '[SERVER-Info] CreateProduct: Db Update on Product 123',
-      'level': 'info',
-      'schema': 'SERVER-Info',
-      'version': 3,
-      'host': (it) => { return it.should.be.a.String() },
-      'pid': (it) => { return it.should.be.a.String() },
-      'component': 'lib/mymodule',
-      'category': 'Catalog',
-      'transaction': 'CreateProduct',
-      'trace': 'e45dc587-3516-489f-9487-391a119889c0',
-      'annotations': {
-        'productId': '123'
-      }
-    }
-
-    catcher.getParsedRecord(0).should.match(expectedLog)
+    it('should output the same log as stated in the readme', function () {
+      catcher.getParsedRecord(0).should.match(expectedLog)
+    })
+    it('should have fields in the correct order', () => {
+      Object.keys(catcher.getParsedRecord(0)).should.eql(Object.keys(expectedLog))
+    })
   })
 
   describe('default options', () => {
