@@ -7,7 +7,7 @@
     "test": "snazzy && istanbul cover _mocha",
     "lint": "snazzy",
     "tdd": "mocha -w",
-    "ci": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "ci": "snazzy && istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
