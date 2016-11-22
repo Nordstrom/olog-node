@@ -4,7 +4,7 @@
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
   "main": "olog.js",
   "scripts": {
-    "test": "snazzy && istanbul test _mocha",
+    "test": "snazzy && istanbul cover _mocha",
     "lint": "snazzy",
     "tdd": "mocha -w"
   },
@@ -30,8 +30,10 @@
   },
   "homepage": "https://github.com/Nordstrom/olog-node#readme",
   "devDependencies": {
+    "coveralls": "^2.11.15",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
+    "mocha-lcov-reporter": "^1.2.0",
     "should": "^11.1.1",
     "snazzy": "^5.0.0",
     "standard": "^8.5.0"
