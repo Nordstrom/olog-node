@@ -1,12 +1,13 @@
 {
   "name": "olog",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging",
-  "main": "index.js",
+  "main": "olog.js",
   "scripts": {
-    "test": "standard && istanbul test _mocha",
-    "lint": "standard",
-    "tdd": "mocha -w"
+    "test": "snazzy && istanbul cover _mocha",
+    "lint": "snazzy",
+    "tdd": "mocha -w",
+    "ci": "snazzy && istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -30,9 +31,15 @@
   },
   "homepage": "https://github.com/Nordstrom/olog-node#readme",
   "devDependencies": {
+    "coveralls": "^2.11.15",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
+    "mocha-lcov-reporter": "^1.2.0",
     "should": "^11.1.1",
+    "snazzy": "^5.0.0",
     "standard": "^8.5.0"
+  },
+  "dependencies": {
+    "fast-safe-stringify": "^1.1.3"
   }
 }
