@@ -228,6 +228,7 @@ class Log {
     appOpts.stream.write(stringify(record))
   }
 
+  // Server logging functions
   // todo: these can all be dynamically generated w/ ES6
   serverDebug (record) {
     if (this._levelNotEnabled(debug)) return
@@ -248,10 +249,29 @@ class Log {
   warn () { this.serverWarn.apply(this, arguments) }
 
   serverError (record) {
-    if (this._levelNotEnabled(error)) return
     this._write('serverError', 'error', record)
   }
   error () { this.serverError.apply(this, arguments) }
+
+  // Client logging functions
+  clientDebug (record) {
+    if (this._levelNotEnabled(debug)) return
+    this._write('clientDebug', 'debug', record)
+  }
+
+  clientInfo (record) {
+    if (this._levelNotEnabled(info)) return
+    this._write('clientInfo', 'info', record)
+  }
+
+  clientWarn (record) {
+    if (this._levelNotEnabled(warn)) return
+    this._write('clientWarn', 'warn', record)
+  }
+
+  clientError (record) {
+    this._write('clientError', 'error', record)
+  }
 }
 
 module.exports = (component, defaults) => {
