@@ -10,12 +10,14 @@ const ISO_REGEX = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d
 const HOSTNAME_REGEX = /^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|-){0,61}[0-9A-Za-z])?)*\.?$/
 const PID_REGEX = /[0-9]*/
 
+// setup the catcher as the stream for logs
+function resetTestLogger () {
+  catcher.clear()
+  olog.Log.config({stream: catcher})
+}
+
 describe('basic logging functionality', () => {
-  beforeEach(() => {
-    // setup the catcher as the stream for logs
-    catcher.clear()
-    olog.Log.config({stream: catcher})
-  })
+  beforeEach(resetTestLogger)
 
   it('should log basic message', () => {
     let log = olog('componentName')
@@ -138,18 +140,94 @@ describe('basic logging functionality', () => {
       catcher.getParsedRecord(0).should.have.property('application', 'UnitTests')
     })
   })
+  describe('logging level', () => {
+    describe('should not write logs lower than set level', () => {
+      it('when using the default level \'info\'', () => {
+        olog('debugIgnoreTest')
+          .serverDebug({message: 'Should not be written to stream'})
+        catcher.records.length.should.eql(0)
+      })
+      it('when manually configured to have level \'error\'', () => {
+        let log = olog('allIgnoreTest')
+        olog.Log.config({ level: 'error' })
+        log.serverDebug({message: 'Should be ignored'})
+        log.serverInfo({message: 'Should be ignored'})
+        log.serverWarn({message: 'Should be ignored'})
+        catcher.records.length.should.eql(0)
+      })
+    })
+    describe('server logging functions should have shorter aliases', () => {
+      it('debug', () => {
+        let log = olog('debugAliasTest')
+        olog.Log.config({ level: 'debug' })
+        log.debug({message: 'Should have debug level'})
+        catcher.getParsedRecord(0).should.have.property('level', 'debug')
+      })
+      it('info', () => {
+        olog('infoAliasTest')
+          .info({message: 'Should have info level'})
+        catcher.getParsedRecord(0).should.have.property('level', 'info')
+      })
+      it('warn', () => {
+        olog('warnAliasTest')
+          .warn({message: 'Should have warn level'})
+        catcher.getParsedRecord(0).should.have.property('level', 'warn')
+      })
+      it('error', () => {
+        olog('errorAliasTest')
+          .error({message: 'Should have error level'})
+        catcher.getParsedRecord(0).should.have.property('level', 'error')
+      })
+    })
+  })
+})
 
-  describe('server logging functions should have shorter aliases', () => {
-    it('info', () => {
-      olog('infoAliasTest')
-        .info({message: 'Should have info level'})
+describe('client logging schema', () => {
+  let productId = '123'
+  var testRecord = {
+    'message': `Price check on Product ${productId}`,
+    'url': 'https://store.nordstrom.com/products/123/pricing',
+    'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36',
+    'userAuth': 'hash:29283lsadf,name:andy',
+    'transaction': 'LoadProductPrice',
+    'trace': 'e45dc587-3516-489f-9487-391a119889c0',
+    'annotations': {
+      'productId': productId
+    }
+  }
+  beforeEach(resetTestLogger)
+  describe('should have a client logger function defined for all levels', () => {
+    it('clientDebug', () => {
+      let log = olog('ProductService.PriceAdapter.LoadPrice')
+      olog.Log.config({ level: 'debug' })
+      log.clientDebug(testRecord)
+      catcher.getParsedRecord(0).should.have.property('level', 'debug')
+    })
+    it('clientInfo', () => {
+      olog('ProductService.PriceAdapter.LoadPrice')
+        .clientInfo(testRecord)
       catcher.getParsedRecord(0).should.have.property('level', 'info')
     })
-    it('warn', () => {
-      olog('warnAliasTest')
-        .warn({message: 'Should have warn level'})
+    it('clientWarn', () => {
+      olog('ProductService.PriceAdapter.LoadPrice')
+        .clientWarn(testRecord)
       catcher.getParsedRecord(0).should.have.property('level', 'warn')
     })
-    // todo other levels - debug needs to set config level lower
+    it('clientError', () => {
+      var clientException = new Error('Error rendering price section')
+      var errorRecord = Object.assign({}, {'exception': clientException.stack}, testRecord)
+      olog('ProductService.PriceAdapter.LoadPrice')
+        .clientError(errorRecord)
+      catcher.getParsedRecord(0).should.have.property('level', 'error')
+    })
+  })
+  it('ignores logs below current level', () => {
+    // set level to error
+    let log = olog('ProductService.PriceAdapter.LoadPrice')
+    olog.Log.config({ level: 'error' })
+    log.clientDebug(testRecord)
+    log.clientInfo(testRecord)
+    log.clientWarn(testRecord)
+    catcher.records.length.should.eql(0)
   })
 })

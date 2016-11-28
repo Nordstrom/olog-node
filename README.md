@@ -1,4 +1,9 @@
+
+
 # olog
+[![Build Status](https://travis-ci.org/Nordstrom/olog-node.svg)](https://travis-ci.org/Nordstrom/olog-node) [![Coverage Status](https://coveralls.io/repos/github/Nordstrom/olog-node/badge.svg)](https://coveralls.io/github/Nordstrom/olog-node) [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
+
 Opinionated Logging for Node.js - forces prescriptive, disciplined, structured logging.  This is logging based on predefined [Schemas]
 (SCHEMAS.md) with default fields.  Schema names, fields, and message formatting all have defaults but can all be configured.
 
